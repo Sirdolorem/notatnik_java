@@ -3,6 +3,8 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +43,10 @@ public class Editor {
 
     private void setupUndoRedoShortcuts() {
         // Bind Ctrl+Z to undo
-        textArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control Z"), "Undo");
+        int menuShortcutMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx();
+        
+        textArea.getInputMap(JComponent.WHEN_FOCUSED).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_Z, menuShortcutMask), "Undo");
         textArea.getActionMap().put("Undo", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -50,7 +55,8 @@ public class Editor {
         });
 
         // Bind Ctrl+Y to redo
-        textArea.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("control Y"), "Redo");
+        textArea.getInputMap(JComponent.WHEN_FOCUSED).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_Y, menuShortcutMask), "Redo");
         textArea.getActionMap().put("Redo", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {

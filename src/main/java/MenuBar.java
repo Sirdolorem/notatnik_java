@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 public class MenuBar {
@@ -42,7 +43,7 @@ public class MenuBar {
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
         JMenuItem newItem = new JMenuItem("New");
-        newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+        newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.CTRL_DOWN_MASK));
         newItem.addActionListener(e -> {
             if (editor.checkUnsavedChanges()) {
                 editor.getTextArea().setText("");
@@ -50,15 +51,15 @@ public class MenuBar {
         });
 
         JMenuItem openItem = new JMenuItem("Open");
-        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
+        openItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_DOWN_MASK));
         openItem.addActionListener(e -> editor.openFile());
 
         JMenuItem saveItem = new JMenuItem("Save");
-        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK));
+        saveItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.CTRL_DOWN_MASK));
         saveItem.addActionListener(e -> editor.saveFile());
 
         JMenuItem exitItem = new JMenuItem("Exit");
-        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.CTRL_DOWN_MASK));
         exitItem.addActionListener(e -> {
             if (editor.checkUnsavedChanges()) {
                 System.exit(0);
@@ -78,11 +79,11 @@ public class MenuBar {
         editMenu.setMnemonic(KeyEvent.VK_E);
 
         JMenuItem undoItem = new JMenuItem("Undo");
-        undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
+        undoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, InputEvent.CTRL_DOWN_MASK));
         undoItem.addActionListener(e -> editor.undo());
 
         JMenuItem redoItem = new JMenuItem("Redo");
-        redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+        redoItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_DOWN_MASK));
         redoItem.addActionListener(e -> editor.redo());
 
         editMenu.add(undoItem);
@@ -95,7 +96,7 @@ public class MenuBar {
         searchReplaceMenu.setMnemonic(KeyEvent.VK_S);
 
         JMenuItem searchItem = new JMenuItem("Search");
-        searchItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK));
+        searchItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
         searchItem.addActionListener(e -> {
             String searchText = JOptionPane.showInputDialog("Enter text to search:");
             if (searchText != null) {
@@ -104,7 +105,7 @@ public class MenuBar {
         });
 
         JMenuItem replaceItem = new JMenuItem("Replace");
-        replaceItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+        replaceItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, InputEvent.CTRL_DOWN_MASK));
         replaceItem.addActionListener(e -> {
             String searchText = JOptionPane.showInputDialog("Enter text to replace:");
             String replaceText = JOptionPane.showInputDialog("Enter replacement text:");
