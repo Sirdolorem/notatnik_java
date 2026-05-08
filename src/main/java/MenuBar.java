@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -9,10 +10,27 @@ public class MenuBar {
     public MenuBar(Editor editor) {
         this.editor = editor;
         menuBar = new JMenuBar();
+        menuBar.setPreferredSize(new Dimension(0, 40)); // Make menu bar taller
 
         createFileMenu();
         createEditMenu();
         createSearchReplaceMenu();
+        
+        applyCustomFont(menuBar);
+    }
+
+    private void applyCustomFont(JMenuBar menuBar) {
+        Font menuFont = new Font("SansSerif", Font.PLAIN, 18); // Bigger font
+        for (int i = 0; i < menuBar.getMenuCount(); i++) {
+            JMenu menu = menuBar.getMenu(i);
+            menu.setFont(menuFont);
+            for (int j = 0; j < menu.getItemCount(); j++) {
+                JMenuItem item = menu.getItem(j);
+                if (item != null) {
+                    item.setFont(menuFont);
+                }
+            }
+        }
     }
 
     public JMenuBar getMenuBar() {

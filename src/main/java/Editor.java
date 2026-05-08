@@ -16,8 +16,8 @@ public class Editor {
 
     public Editor() {
         textArea = new JTextArea();
-        textArea.setFont(new Font("Arial", Font.PLAIN, 16));
-        textArea.setMargin(new Insets(10, 10, 10, 10)); // Add padding
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 18)); // Better for code/text
+        textArea.setMargin(new Insets(15, 15, 15, 15)); // More padding
         
         undoManager = new UndoManager();
         textArea.getDocument().addUndoableEditListener(undoManager);

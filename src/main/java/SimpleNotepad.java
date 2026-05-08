@@ -23,7 +23,11 @@ public class SimpleNotepad extends JFrame {
 
         // Status Bar
         JLabel statusLabel = new JLabel(" Line: 1, Column: 1");
-        statusLabel.setBorder(BorderFactory.createEmptyBorder(2, 5, 2, 5));
+        statusLabel.setFont(new Font("SansSerif", Font.PLAIN, 16)); // Bigger font
+        statusLabel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createMatteBorder(1, 0, 0, 0, Color.LIGHT_GRAY), // Top border
+            BorderFactory.createEmptyBorder(10, 15, 10, 15) // Generous padding
+        ));
         editor.setStatusLabel(statusLabel);
         add(statusLabel, BorderLayout.SOUTH);
 
