@@ -1,9 +1,13 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultHighlighter;
 import javax.swing.undo.UndoManager;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.regex.Matcher;
@@ -25,10 +29,10 @@ public class Editor {
         textArea.getDocument().addUndoableEditListener(undoManager);
         
         // Track changes
-        textArea.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            public void insertUpdate(javax.swing.event.DocumentEvent e) { setModified(true); }
-            public void removeUpdate(javax.swing.event.DocumentEvent e) { setModified(true); }
-            public void changedUpdate(javax.swing.event.DocumentEvent e) { setModified(true); }
+        textArea.getDocument().addDocumentListener(new DocumentListener() {
+            public void insertUpdate(DocumentEvent e) { onDocumentChanged(); }
+            public void removeUpdate(DocumentEvent e) { onDocumentChanged(); }
+            public void changedUpdate(DocumentEvent e) { onDocumentChanged(); }
         });
 
         // Track cursor position
@@ -89,13 +93,14 @@ public class Editor {
 
     public void search(String searchText) {
         textArea.getHighlighter().removeAllHighlights();
+        if (searchText == null || searchText.isEmpty()) return; // Guard: skip empty search
         Pattern pattern = Pattern.compile(Pattern.quote(searchText));
         Matcher matcher = pattern.matcher(textArea.getText());
 
         while (matcher.find()) {
             try {
                 textArea.getHighlighter().addHighlight(matcher.start(), matcher.end(),
-                        new javax.swing.text.DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW));
+                        new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW));
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -103,8 +108,27 @@ public class Editor {
     }
 
     public void replace(String searchText, String replaceText) {
+        if (searchText == null || searchText.isEmpty()) return; // Guard: skip empty search
+        // Use document-level replacement to preserve undo history
         String content = textArea.getText();
-        textArea.setText(content.replaceAll(Pattern.quote(searchText), Matcher.quoteReplacement(replaceText)));
+        String newContent = content.replaceAll(Pattern.quote(searchText), Matcher.quoteReplacement(replaceText));
+        try {
+            ((AbstractDocument) textArea.getDocument()).replace(0, textArea.getDocument().getLength(), newContent, null);
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void newFile() {
+        if (!checkUnsavedChanges()) return;
+        try {
+            // Replace content silently then reset modified flag
+            ((AbstractDocument) textArea.getDocument()).replace(0, textArea.getDocument().getLength(), "", null);
+        } catch (BadLocationException ex) {
+            ex.printStackTrace();
+        }
+        undoManager.discardAllEdits(); // Clear undo history for fresh document
+        setModified(false);
     }
 
     public void openFile() {
@@ -152,6 +176,11 @@ public class Editor {
                 statusLabel.setText(" Line: 1, Column: 1");
             }
         }
+    }
+
+    // Called by DocumentListener - package-visible so the inner class can access it unambiguously
+    void onDocumentChanged() {
+        setModified(true);
     }
 
     private void setModified(boolean modified) {
